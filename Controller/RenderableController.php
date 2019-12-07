@@ -1,6 +1,6 @@
 <?php
 
-namespace Drift\Twig\Controller\RenderableController;
+namespace Drift\Twig\Controller;
 
 /**
  * Class RenderableController
