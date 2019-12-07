@@ -34,7 +34,6 @@ class Preloader implements LoaderInterface
     {
         $this->loader = $loader;
         $this->paths = $paths;
-        $this->preLoad();
     }
 
     /**

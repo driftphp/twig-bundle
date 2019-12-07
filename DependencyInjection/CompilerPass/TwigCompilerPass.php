@@ -2,6 +2,7 @@
 
 namespace Drift\Twig\DependencyInjection\CompilerPass;
 
+use Drift\HttpKernel\AsyncKernelEvents;
 use Drift\Twig\Loader\Preloader;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -56,9 +57,12 @@ class TwigCompilerPass implements CompilerPassInterface
 
         $container->setDefinition(
             'twig.preloader',
-            new Definition(Preloader::class, [
+            (new Definition(Preloader::class, [
                 new Reference('twig.array_loader'),
                 [$viewsPath]
+            ]))->addTag('kernel.event_listener', [
+                'event' => AsyncKernelEvents::PRELOAD,
+                'method' => 'preload'
             ])
         );
 

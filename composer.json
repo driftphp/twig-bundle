@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": "^7.4",
-        "drift/http-kernel": "^0.1",
+        "drift/http-kernel": "^0.1.2",
         "mmoreram/base-bundle": "^2.0",
         "mmoreram/symfony-bundle-dependencies": "^2.2",
         "twig/twig": "^3.0"
