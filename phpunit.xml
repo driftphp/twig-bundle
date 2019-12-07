@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         convertErrorsToExceptions="false"
+         convertNoticesToExceptions="false"
+         convertWarningsToExceptions="false"
+         processIsolation="false"
+         stopOnFailure="true"
+         bootstrap="vendor/autoload.php"
+>
+    <testsuites>
+        <testsuite name="base">
+            <directory>./Tests/Base</directory>
+        </testsuite>
+
+        <testsuite name="no-stopwatch">
+            <directory>./Tests/NoStopwatch</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
