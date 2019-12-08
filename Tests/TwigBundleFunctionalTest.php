@@ -73,6 +73,6 @@ abstract class TwigBundleFunctionalTest extends BaseFunctionalTest
                 BController::class,
                 'b',
             ],
-        ], 'test', true);
+        ], 'test', false);
     }
 }

@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Twig\Environment;
 use React\Promise;
+use React\Promise\FulfilledPromise;
 
 /**
  * Class ResponseTransformer
@@ -50,20 +51,30 @@ class ResponseTransformer
      */
     public function renderView(ViewEvent $event) : PromiseInterface
     {
+        $templatePath = $this->getTemplatePathFromController($event);
+        if (is_null($templatePath)) {
+
+            new FulfilledPromise($event->getControllerResult());
+        }
+
         $controllerResult = $event->getControllerResult();
         $promisesReferences = [];
         $this->solvePromises($controllerResult, $promisesReferences);
 
         return Promise\all(array_column($promisesReferences, 'promise'))
-            ->then(function(array $results) use (&$promisesReferences, $event, $controllerResult) {
+            ->then(function(array $results) use (&$promisesReferences, $event, $controllerResult, $templatePath) {
                 foreach ($promisesReferences as $key => &$result) {
                     $result['memory'] = $results[$key];
                 }
 
-                $this->quessAndRenderView(
-                    $event,
-                    $controllerResult
-                );
+                $template = $this
+                    ->twig
+                    ->load($templatePath);
+
+                $event->setResponse(new Response(
+                    $template->render($controllerResult),
+                    200
+                ));
             });
     }
 
@@ -95,28 +106,19 @@ class ResponseTransformer
     }
 
     /**
-     * Render view
+     * Get template path, or null if does not implement the interface
      *
      * @param ViewEvent $event
-     * @param array $data
+     *
+     * @return string|null
      */
-    private function quessAndRenderView(
-        ViewEvent $event,
-        array $data
-    )
+    private function getTemplatePathFromController(ViewEvent $event) : ? string
     {
         $controller = $event->getRequest()->attributes->get('_controller');
         $interfaces = class_implements($controller);
 
-        if (array_key_exists(RenderableController::class, $interfaces)) {
-            $templatePath = $controller::getTemplatePath();
-
-            $template = $this->twig->load($templatePath);
-
-            $event->setResponse(new Response(
-                $template->render($data),
-                200
-            ));
-        }
+        return (array_key_exists(RenderableController::class, $interfaces))
+            ? $controller::getTemplatePath()
+            : null;
     }
 }
