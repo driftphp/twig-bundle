@@ -1,5 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Drift Twig Bundle
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Feel free to edit as you please, and have fun.
+ *
+ * @author Marc Morera <yuhu@mmoreram.com>
+ */
+
+declare(strict_types=1);
+
 namespace Drift\Twig\Loader;
 
 use Symfony\Component\Finder\Finder;
@@ -48,10 +61,12 @@ class Preloader implements LoaderInterface
             ->name('*.twig');
 
         foreach ($finder as $file) {
+            $relativePath = str_replace($this->paths, '', $file->getPath());
+
             $this
                 ->loader
                 ->setTemplate(
-                    $file->getFilename(),
+                    trim("$relativePath/" . $file->getFilename(), '/'),
                     file_get_contents($file->getPath() . '/' . $file->getFilename())
                 );
         }

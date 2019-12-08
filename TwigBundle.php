@@ -1,11 +1,25 @@
 <?php
 
+/*
+ * This file is part of the Drift Twig Bundle
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Feel free to edit as you please, and have fun.
+ *
+ * @author Marc Morera <yuhu@mmoreram.com>
+ */
+
+declare(strict_types=1);
+
 namespace Drift\Twig;
 
-use Drift\Kernel;
 use Drift\Twig\DependencyInjection\CompilerPass\TwigCompilerPass;
+use Drift\Twig\DependencyInjection\TwigExtension;
 use Mmoreram\BaseBundle\BaseBundle;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 /**
  * Class TwigBundle
@@ -13,18 +27,15 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 class TwigBundle extends BaseBundle
 {
     /**
-     * @var Kernel
-     */
-    private $kernel;
-
-    /**
-     * TwigCompilerPass constructor.
+     * Returns the bundle's container extension.
      *
-     * @param Kernel $kernel
+     * @return ExtensionInterface|null The container extension
+     *
+     * @throws \LogicException
      */
-    public function __construct(Kernel $kernel)
+    public function getContainerExtension()
     {
-        $this->kernel = $kernel;
+        return new TwigExtension();
     }
 
     /**
@@ -35,7 +46,7 @@ class TwigBundle extends BaseBundle
     public function getCompilerPasses(): array
     {
         return [
-            new TwigCompilerPass($this->kernel)
+            new TwigCompilerPass()
         ];
     }
 }
