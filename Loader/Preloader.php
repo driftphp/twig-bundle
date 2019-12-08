@@ -61,7 +61,11 @@ class Preloader implements LoaderInterface
             ->name('*.twig');
 
         foreach ($finder as $file) {
-            $relativePath = str_replace($this->paths, '', $file->getPath());
+            $trimmedPaths = array_map(function(string $path) {
+                return trim($path, '/');
+            }, $this->paths);
+            $relativePath = str_replace($trimmedPaths, '', $file->getPath());
+            $relativePath = trim($relativePath, '/');
 
             $this
                 ->loader
