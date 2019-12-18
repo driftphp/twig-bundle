@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Drift Twig Bundle
+ * This file is part of the DriftPHP Project
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,7 +26,7 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
- * Class TwigBundleFunctionalTest
+ * Class TwigBundleFunctionalTest.
  */
 abstract class TwigBundleFunctionalTest extends BaseFunctionalTest
 {
@@ -60,7 +60,7 @@ abstract class TwigBundleFunctionalTest extends BaseFunctionalTest
                 ],
             ],
             'twig' => [
-                'views_path' => __DIR__ . '/views'
+                'views_path' => __DIR__.'/views',
             ],
         ], [
             [

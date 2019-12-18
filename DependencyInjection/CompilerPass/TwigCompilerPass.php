@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Drift Twig Bundle
+ * This file is part of the DriftPHP Project
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,9 @@ namespace Drift\Twig\DependencyInjection\CompilerPass;
 
 use Drift\HttpKernel\AsyncKernelEvents;
 use Drift\Twig\Controller\ResponseTransformer;
-use Drift\Twig\Loader\Preloader;
+use Drift\Twig\Loader\InMemoryLoader;
+use Drift\Twig\Loader\Precompiler;
+use Drift\Twig\Loader\TemplateParser;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -28,7 +30,7 @@ use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;
 
 /**
- * Class TwigCompilerPass
+ * Class TwigCompilerPass.
  */
 class TwigCompilerPass implements CompilerPassInterface
 {
@@ -44,13 +46,20 @@ class TwigCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * Process Twig engine
+     * Process Twig engine.
      *
      * @param ContainerBuilder $container
      */
     private function processTwigEngine(ContainerBuilder $container)
     {
         $viewsPath = $container->getParameter('twig.views_path');
+
+        $container->setDefinition(
+            'twig.template_parser',
+            new Definition(TemplateParser::class, [
+                [$viewsPath],
+            ])
+        );
 
         $container->setDefinition(
             'twig.array_loader',
@@ -60,25 +69,37 @@ class TwigCompilerPass implements CompilerPassInterface
         $container->setDefinition(
             'twig.filesystem_loader',
             new Definition(FilesystemLoader::class, [
-                $viewsPath
+                $viewsPath,
             ])
         );
 
         $container->setDefinition(
-            'twig.preloader',
-            (new Definition(Preloader::class, [
+            'twig.in_memory_loader',
+            (new Definition(InMemoryLoader::class, [
                 new Reference('twig.array_loader'),
-                [$viewsPath]
+                new Reference('twig.template_parser'),
             ]))->addTag('kernel.event_listener', [
                 'event' => AsyncKernelEvents::PRELOAD,
-                'method' => 'preload'
+                'method' => 'preload',
+            ])
+        );
+
+        $container->setDefinition(
+            'twig.precompiler',
+            (new Definition(Precompiler::class, [
+                new Reference('twig'),
+                new Reference('twig.template_parser'),
+            ]))
+            ->addTag('kernel.event_listener', [
+                'event' => AsyncKernelEvents::PRELOAD,
+                'method' => 'precompile',
             ])
         );
 
         $container->setDefinition(
             'twig',
             new Definition(Environment::class, [
-                new Reference('twig.preloader')
+                new Reference('twig.in_memory_loader'),
             ])
         );
 
@@ -86,7 +107,7 @@ class TwigCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * Process Twig engine
+     * Process Twig engine.
      *
      * @param ContainerBuilder $container
      */
@@ -95,14 +116,12 @@ class TwigCompilerPass implements CompilerPassInterface
         $container->setDefinition(
             'twig.response_transformer',
             (new Definition(ResponseTransformer::class, [
-                new Reference('twig')
+                new Reference('twig'),
             ]))
                 ->addTag('kernel.event_listener', [
                     'event' => KernelEvents::VIEW,
-                    'method' => 'renderView'
+                    'method' => 'renderView',
                 ])
         );
     }
-}
-    {
 }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Drift Twig Bundle
+ * This file is part of the DriftPHP Project
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,8 +15,8 @@ declare(strict_types=1);
 
 namespace Drift\Twig\Tests\Controller;
 
-use React\Promise\FulfilledPromise;
 use Drift\Twig\Controller\RenderableController;
+use React\Promise\FulfilledPromise;
 
 /**
  * Class RenderableController.
@@ -35,15 +35,15 @@ class BController implements RenderableController
             'b' => new FulfilledPromise('2'),
             'c' => [
                 'd' => (new FulfilledPromise('3'))
-                    ->then(function(string $value) {
+                    ->then(function (string $value) {
                         return new FulfilledPromise($value);
                     }),
-            ]
+            ],
         ];
     }
 
     /**
-     * Get render template
+     * Get render template.
      *
      * @return string
      */

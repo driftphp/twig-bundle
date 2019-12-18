@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Drift Twig Bundle
+ * This file is part of the DriftPHP Project
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,14 +16,14 @@ declare(strict_types=1);
 namespace Drift\Twig\Controller;
 
 /**
- * Class RenderableController
+ * Class RenderableController.
  */
 interface RenderableController
 {
     /**
-     * Get render template
+     * Get render template.
      *
      * @return string
      */
-    public static function getTemplatePath() : string;
+    public static function getTemplatePath(): string;
 }
