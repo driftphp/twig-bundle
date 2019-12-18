@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Drift Twig Bundle
+ * This file is part of the DriftPHP Project
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,7 +19,7 @@ use Mmoreram\BaseBundle\DependencyInjection\BaseExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * Class TwigExtension
+ * Class TwigExtension.
  */
 class TwigExtension extends BaseExtension
 {
@@ -68,7 +68,7 @@ class TwigExtension extends BaseExtension
     protected function getParametrizationValues(array $config): array
     {
         return [
-            'twig.views_path' => $config['views_path']
+            'twig.views_path' => $config['views_path'],
         ];
     }
 }

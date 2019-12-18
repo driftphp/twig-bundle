@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Drift Twig Bundle
+ * This file is part of the DriftPHP Project
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,7 +19,7 @@ use Mmoreram\BaseBundle\DependencyInjection\BaseConfiguration;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
 /**
- * Class TwigConfiguration
+ * Class TwigConfiguration.
  */
 class TwigConfiguration extends BaseConfiguration
 {
@@ -33,7 +33,7 @@ class TwigConfiguration extends BaseConfiguration
         $rootNode
             ->children()
                 ->scalarNode('views_path')
-                    ->defaultValue("%kernel.project_dir%/Drift/views/")
+                    ->defaultValue('%kernel.project_dir%/Drift/views/')
                 ->end()
             ->end();
     }

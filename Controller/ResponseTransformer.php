@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Drift Twig Bundle
+ * This file is part of the DriftPHP Project
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,15 +15,15 @@ declare(strict_types=1);
 
 namespace Drift\Twig\Controller;
 
+use React\Promise;
+use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Twig\Environment;
-use React\Promise;
-use React\Promise\FulfilledPromise;
 
 /**
- * Class ResponseTransformer
+ * Class ResponseTransformer.
  */
 class ResponseTransformer
 {
@@ -43,17 +43,16 @@ class ResponseTransformer
     }
 
     /**
-     * Render view
+     * Render view.
      *
      * @param ViewEvent $event
      *
      * @return PromiseInterface
      */
-    public function renderView(ViewEvent $event) : PromiseInterface
+    public function renderView(ViewEvent $event): PromiseInterface
     {
         $templatePath = $this->getTemplatePathFromController($event);
         if (is_null($templatePath)) {
-
             new FulfilledPromise($event->getControllerResult());
         }
 
@@ -62,7 +61,7 @@ class ResponseTransformer
         $this->solvePromises($controllerResult, $promisesReferences);
 
         return Promise\all(array_column($promisesReferences, 'promise'))
-            ->then(function(array $results) use (&$promisesReferences, $event, $controllerResult, $templatePath) {
+            ->then(function (array $results) use (&$promisesReferences, $event, $controllerResult, $templatePath) {
                 foreach ($promisesReferences as $key => &$result) {
                     $result['memory'] = $results[$key];
                 }
@@ -79,7 +78,7 @@ class ResponseTransformer
     }
 
     /**
-     * Solve promises
+     * Solve promises.
      *
      * @param array $controllerResult
      * @param array $promisesReferences
@@ -87,13 +86,12 @@ class ResponseTransformer
     private function solvePromises(
         array &$controllerResult,
         array &$promisesReferences
-    )
-    {
+    ) {
         foreach ($controllerResult as $key => &$element) {
             if ($element instanceof PromiseInterface) {
                 $promisesReferences[] = [
                     'memory' => &$element,
-                    'promise' => $element
+                    'promise' => $element,
                 ];
 
                 continue;
@@ -106,13 +104,13 @@ class ResponseTransformer
     }
 
     /**
-     * Get template path, or null if does not implement the interface
+     * Get template path, or null if does not implement the interface.
      *
      * @param ViewEvent $event
      *
      * @return string|null
      */
-    private function getTemplatePathFromController(ViewEvent $event) : ? string
+    private function getTemplatePathFromController(ViewEvent $event): ? string
     {
         $controller = $event->getRequest()->attributes->get('_controller');
         $interfaces = class_implements($controller);

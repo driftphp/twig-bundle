@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Drift Twig Bundle
+ * This file is part of the DriftPHP Project
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,16 +15,15 @@ declare(strict_types=1);
 
 namespace Drift\Twig\Loader;
 
-use Symfony\Component\Finder\Finder;
 use Twig\Error\LoaderError;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\LoaderInterface;
 use Twig\Source;
 
 /**
- * Class Preloader
+ * Class Preloader.
  */
-class Preloader implements LoaderInterface
+class InMemoryLoader implements LoaderInterface
 {
     /**
      * @var ArrayLoader
@@ -32,46 +31,39 @@ class Preloader implements LoaderInterface
      * Loader
      */
     private $loader;
-    private $paths;
+
+    /**
+     * @var TemplateParser
+     */
+    private $templateParser;
 
     /**
      * Preloader constructor.
      *
-     * @param ArrayLoader $loader
-     * @param array $paths
+     * @param ArrayLoader    $loader
+     * @param TemplateParser $templateParser
      */
     public function __construct(
         ArrayLoader $loader,
-        array $paths
-    )
-    {
+        TemplateParser $templateParser
+    ) {
         $this->loader = $loader;
-        $this->paths = $paths;
+        $this->templateParser = $templateParser;
     }
 
     /**
-     * Pre load
+     * Preload.
      */
-    public function preLoad()
+    public function preload()
     {
-        $finder = new Finder();
-        $finder
-            ->in($this->paths)
-            ->files()
-            ->name('*.twig');
-
-        foreach ($finder as $file) {
-            $trimmedPaths = array_map(function(string $path) {
-                return trim($path, '/');
-            }, $this->paths);
-            $relativePath = str_replace($trimmedPaths, '', $file->getPath());
-            $relativePath = trim($relativePath, '/');
-
+        foreach ($this
+            ->templateParser
+            ->loadTemplates() as $templatePath => $content) {
             $this
                 ->loader
                 ->setTemplate(
-                    trim("$relativePath/" . $file->getFilename(), '/'),
-                    file_get_contents($file->getPath() . '/' . $file->getFilename())
+                    $templatePath,
+                    $content
                 );
         }
     }

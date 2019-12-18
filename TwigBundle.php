@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Drift Twig Bundle
+ * This file is part of the DriftPHP Project
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 /**
- * Class TwigBundle
+ * Class TwigBundle.
  */
 class TwigBundle extends BaseBundle
 {
@@ -46,7 +46,7 @@ class TwigBundle extends BaseBundle
     public function getCompilerPasses(): array
     {
         return [
-            new TwigCompilerPass()
+            new TwigCompilerPass(),
         ];
     }
 }

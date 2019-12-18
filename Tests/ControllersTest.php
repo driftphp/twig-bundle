@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Drift Twig Bundle
+ * This file is part of the DriftPHP Project
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,30 +15,30 @@ declare(strict_types=1);
 
 namespace Drift\Twig\Tests;
 
+use Clue\React\Block;
 use React\EventLoop\StreamSelectLoop;
+use React\Promise;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Clue\React\Block;
-use React\Promise;
 
 /**
- * Class ControllersTest
+ * Class ControllersTest.
  */
 class ControllersTest extends TwigBundleFunctionalTest
 {
     /**
-     * Test controllers
+     * Test controllers.
      */
     public function testControllers()
     {
         self::$kernel->preload();
         $loop = new StreamSelectLoop();
 
-        /**
+        /*
          * Renaming the file should not have effect here, so the file is already
          * loaded by the Loader.
          */
-        rename(__DIR__ . '/views/a.twig', __DIR__ . '/views/a.twig');
+        rename(__DIR__.'/views/a.twig', __DIR__.'/views/a.twig');
 
         $promise1 = self::$kernel
             ->handleAsync(new Request([], [], [], [], [], [
@@ -74,7 +74,6 @@ class ControllersTest extends TwigBundleFunctionalTest
             ]), $loop
         );
 
-
-        rename(__DIR__ . '/views/a.twig', __DIR__ . '/views/a.twig');
+        rename(__DIR__.'/views/a.twig', __DIR__.'/views/a.twig');
     }
 }
