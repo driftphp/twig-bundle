@@ -53,7 +53,7 @@ class ResponseTransformer
     {
         $templatePath = $this->getTemplatePathFromController($event);
         if (is_null($templatePath)) {
-            new FulfilledPromise($event->getControllerResult());
+            return new FulfilledPromise($event->getControllerResult());
         }
 
         $controllerResult = $event->getControllerResult();
