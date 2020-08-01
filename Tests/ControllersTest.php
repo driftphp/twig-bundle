@@ -16,10 +16,13 @@ declare(strict_types=1);
 namespace Drift\Twig\Tests;
 
 use Clue\React\Block;
+use Drift\Twig\Tests\Controller\DtoController;
 use React\EventLoop\StreamSelectLoop;
 use React\Promise;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Class ControllersTest.
@@ -75,5 +78,45 @@ class ControllersTest extends TwigBundleFunctionalTest
         );
 
         rename(__DIR__.'/views/a.twig', __DIR__.'/views/a.twig');
+    }
+
+    public function testControllerResultNotIntendedToBeRendered(): void
+    {
+        $dtoResponse = new Response("I'm the response");
+        $listener = static function (ViewEvent $event) use ($dtoResponse) {
+            return (new Promise\FulfilledPromise())
+                ->then(
+                    static function () use ($dtoResponse, $event) {
+                        if ($event->getControllerResult() instanceof DtoController) {
+                            $event->setResponse($dtoResponse);
+                        }
+                    }
+                );
+        };
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher */
+        $eventDispatcher = self::$kernel->getContainer()->get('event_dispatcher');
+        $eventDispatcher->addListener(KernelEvents::VIEW,$listener);
+
+        self::$kernel->preload();
+        $loop = new StreamSelectLoop();
+
+        $promise1 = self::$kernel
+            ->handleAsync(
+                new Request(
+                    [], [], [], [], [], [
+                    'REQUEST_METHOD' => 'GET',
+                    'REQUEST_URI'    => '/dto',
+                    'SERVER_PORT'    => 80,
+                ]
+                )
+            )
+            ->then(
+                static function (Response $response) use ($dtoResponse) {
+                    self::assertSame($dtoResponse, $response);
+                }
+            );
+
+        $loop->run();
+        Block\await($promise1, $loop);
     }
 }

@@ -17,6 +17,7 @@ namespace Drift\Twig\Tests;
 
 use Drift\Twig\Tests\Controller\AController;
 use Drift\Twig\Tests\Controller\BController;
+use Drift\Twig\Tests\Controller\DtoController;
 use Drift\Twig\TwigBundle;
 use Mmoreram\BaseBundle\Kernel\DriftBaseKernel;
 use Mmoreram\BaseBundle\Tests\BaseFunctionalTest;
@@ -72,6 +73,11 @@ abstract class TwigBundleFunctionalTest extends BaseFunctionalTest
                 '/b',
                 BController::class,
                 'b',
+            ],
+            [
+                '/dto',
+                DtoController::class,
+                'dto',
             ],
         ], 'test', false);
     }
