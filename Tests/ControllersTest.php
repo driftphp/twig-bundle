@@ -84,7 +84,7 @@ class ControllersTest extends TwigBundleFunctionalTest
     {
         $dtoResponse = new Response("I'm the response");
         $listener = static function (ViewEvent $event) use ($dtoResponse) {
-            return (new Promise\FulfilledPromise())
+            return Promise\resolve()
                 ->then(
                     static function () use ($dtoResponse, $event) {
                         if ($event->getControllerResult() instanceof DtoController) {

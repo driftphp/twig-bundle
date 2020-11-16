@@ -15,12 +15,12 @@ declare(strict_types=1);
 
 namespace Drift\Twig\Controller;
 
-use React\Promise;
-use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Twig\Environment;
+use function React\Promise\all;
+use function React\Promise\resolve;
 
 /**
  * Class ResponseTransformer.
@@ -53,14 +53,14 @@ class ResponseTransformer
     {
         $templatePath = $this->getTemplatePathFromController($event);
         if (is_null($templatePath)) {
-            return new FulfilledPromise($event->getControllerResult());
+            return resolve($event->getControllerResult());
         }
 
         $controllerResult = $event->getControllerResult();
         $promisesReferences = [];
         $this->solvePromises($controllerResult, $promisesReferences);
 
-        return Promise\all(array_column($promisesReferences, 'promise'))
+        return all(array_column($promisesReferences, 'promise'))
             ->then(function (array $results) use (&$promisesReferences, $event, $controllerResult, $templatePath) {
                 foreach ($promisesReferences as $key => &$result) {
                     $result['memory'] = $results[$key];

@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Drift\Twig\Tests\Controller;
 
 use Drift\Twig\Controller\RenderableController;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 
 /**
  * Class RenderableController.
@@ -32,11 +32,11 @@ class BController implements RenderableController
     {
         return [
             'a' => '1',
-            'b' => new FulfilledPromise('2'),
+            'b' => resolve('2'),
             'c' => [
-                'd' => (new FulfilledPromise('3'))
+                'd' => resolve('3')
                     ->then(function (string $value) {
-                        return new FulfilledPromise($value);
+                        return resolve($value);
                     }),
             ],
         ];
