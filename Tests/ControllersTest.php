@@ -95,7 +95,7 @@ class ControllersTest extends TwigBundleFunctionalTest
         };
         /** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher */
         $eventDispatcher = self::$kernel->getContainer()->get('event_dispatcher');
-        $eventDispatcher->addListener(KernelEvents::VIEW,$listener);
+        $eventDispatcher->addListener(KernelEvents::VIEW, $listener);
 
         self::$kernel->preload();
         $loop = new StreamSelectLoop();
@@ -105,8 +105,8 @@ class ControllersTest extends TwigBundleFunctionalTest
                 new Request(
                     [], [], [], [], [], [
                     'REQUEST_METHOD' => 'GET',
-                    'REQUEST_URI'    => '/dto',
-                    'SERVER_PORT'    => 80,
+                    'REQUEST_URI' => '/dto',
+                    'SERVER_PORT' => 80,
                 ]
                 )
             )

@@ -15,12 +15,12 @@ declare(strict_types=1);
 
 namespace Drift\Twig\Controller;
 
+use function React\Promise\all;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Twig\Environment;
-use function React\Promise\all;
-use function React\Promise\resolve;
 
 /**
  * Class ResponseTransformer.
